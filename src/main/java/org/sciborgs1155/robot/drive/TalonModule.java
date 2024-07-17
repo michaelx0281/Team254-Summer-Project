@@ -24,7 +24,9 @@ public class TalonModule implements ModuleIO {
 
   private final SparkAbsoluteEncoder turnEncoder;
 
-  public TalonModule(int drivePort, int turnPort) {
+  private final Rotation2d angularOffset;
+
+  public TalonModule(int drivePort, int turnPort, Rotation2d angularOffset) {
     driveMotor = new TalonFX(drivePort);
     turnMotor = new CANSparkMax(turnPort, MotorType.kBrushless);
 
@@ -53,6 +55,8 @@ public class TalonModule implements ModuleIO {
     toApply.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     toApply.CurrentLimits.SupplyCurrentLimit = 50;
     driveMotor.getConfigurator().apply(toApply);
+
+    this.angularOffset = angularOffset;
   }
 
   @Override
@@ -77,7 +81,7 @@ public class TalonModule implements ModuleIO {
 
   @Override
   public Rotation2d getRotation() {
-    return Rotation2d.fromRadians(turnEncoder.getPosition());
+    return Rotation2d.fromRadians(turnEncoder.getPosition()).minus(angularOffset);
   }
 
   @Override
