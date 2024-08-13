@@ -1,9 +1,11 @@
 package org.sciborgs1155.robot;
 
+import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.Second;
+import static edu.wpi.first.units.Units.Seconds;
 import static edu.wpi.first.wpilibj2.command.button.RobotModeTriggers.*;
 
 import edu.wpi.first.wpilibj.DataLogManager;
@@ -22,6 +24,8 @@ import org.sciborgs1155.robot.Ports.OI;
 import org.sciborgs1155.robot.commands.Autos;
 import org.sciborgs1155.robot.drive.Drive;
 import org.sciborgs1155.robot.drive.DriveConstants;
+import org.sciborgs1155.robot.elevator.Elevator;
+import static org.sciborgs1155.robot.Constants.*;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -37,6 +41,7 @@ public class Robot extends CommandRobot implements Logged {
 
   // SUBSYSTEMS
   private final Drive drive = Drive.create();
+  private final Elevator elevator = Elevator.create();
 
   // COMMANDS
   @Log.NT private final Autos autos = new Autos();
@@ -45,6 +50,7 @@ public class Robot extends CommandRobot implements Logged {
 
   /** The robot contains subsystems, OI devices, and commands. */
   public Robot() {
+    super(PERIOD.in(Seconds));
     configureGameBehavior();
     configureSubsystemDefaults();
     configureBindings();
@@ -96,6 +102,7 @@ public class Robot extends CommandRobot implements Logged {
                 driver::getRightX,
                 DriveConstants.MAX_ANGULAR_SPEED.in(RadiansPerSecond),
                 DriveConstants.MAX_ANGULAR_ACCEL.in(RadiansPerSecond.per(Second)))));
+    elevator.setDefaultCommand(elevator.moveToHeight(Meters.of(2)));
   }
 
   /** Configures trigger -> command bindings */
@@ -108,5 +115,7 @@ public class Robot extends CommandRobot implements Logged {
         .or(driver.rightBumper())
         .onTrue(Commands.runOnce(() -> speedMultiplier = Constants.FULL_SPEED))
         .onFalse(Commands.run(() -> speedMultiplier = Constants.SLOW_SPEED));
+    operator.x().onTrue(elevator.moveToHeight(Meters.of(5)));
+    operator.y().onTrue(elevator.moveToHeight(Meters.of(3)));
   }
 }

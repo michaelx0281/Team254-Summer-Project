@@ -19,10 +19,12 @@
       "/Robot/drive/rearLeft/turnFeedback": "PIDController",
       "/Robot/drive/rearRight/driveFeedback": "PIDController",
       "/Robot/drive/rearRight/turnFeedback": "PIDController",
+      "/Robot/elevator/pid": "ProfiledPIDController",
       "/SmartDashboard/drive dynamic backward": "Command",
       "/SmartDashboard/drive dynamic forward": "Command",
       "/SmartDashboard/drive quasistatic backward": "Command",
       "/SmartDashboard/drive quasistatic forward": "Command",
+      "/SmartDashboard/elevator2D": "Mechanism2d",
       "/SmartDashboard/turn dynamic backward": "Command",
       "/SmartDashboard/turn dynamic forward": "Command",
       "/SmartDashboard/turn quasistatic backward": "Command",
@@ -55,6 +57,11 @@
         "window": {
           "visible": true
         }
+      },
+      "/SmartDashboard/elevator2D": {
+        "window": {
+          "visible": true
+        }
       }
     }
   },
@@ -82,8 +89,13 @@
               "open": true
             },
             "open": true
-          },
-          "open": true
+          }
+        },
+        "elevator": {
+          "open": true,
+          "pid": {
+            "open": true
+          }
         },
         "open": true
       },
@@ -94,5 +106,40 @@
   },
   "NetworkTables Info": {
     "visible": true
+  },
+  "Plot": {
+    "Plot <1>": {
+      "plots": [
+        {
+          "backgroundColor": [
+            0.0,
+            0.0,
+            0.0,
+            0.8500000238418579
+          ],
+          "height": 338,
+          "series": [
+            {
+              "color": [
+                0.2980392277240753,
+                0.44705885648727417,
+                0.6901960968971252,
+                1.0
+              ],
+              "id": "NT:/Robot/elevator/pid/goal"
+            },
+            {
+              "color": [
+                0.8666667342185974,
+                0.5176470875740051,
+                0.32156863808631897,
+                1.0
+              ],
+              "id": "NT:/Robot/elevator/position"
+            }
+          ]
+        }
+      ]
+    }
   }
 }

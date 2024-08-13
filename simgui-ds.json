@@ -1,25 +1,19 @@
 {
-  "FMS": {
-    "window": {
-      "visible": false
-    }
-  },
   "Joysticks": {
     "window": {
       "visible": false
     }
   },
-  "System Joysticks": {
+  "Keyboard 0 Settings": {
     "window": {
-      "visible": false
+      "visible": true
     }
   },
   "keyboardJoysticks": [
     {
       "axisConfig": [
         {
-          "decKey": 68,
-          "incKey": 65
+          "decKey": 68
         },
         {
           "decKey": 87,

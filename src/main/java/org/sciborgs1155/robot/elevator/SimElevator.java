@@ -1,6 +1,7 @@
 package org.sciborgs1155.robot.elevator;
 
 import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.Seconds;
 import static org.sciborgs1155.robot.elevator.ElevatorConstants.*;
 
 import edu.wpi.first.math.system.plant.DCMotor;
@@ -8,14 +9,12 @@ import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Velocity;
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.simulation.ElevatorSim;
+import edu.wpi.first.wpilibj.simulation.EncoderSim;
 
 public class SimElevator implements ElevatorIO {
   public SimElevator() {}
-
-  DCMotor gearbox =
-      new DCMotor( // adjust values to be the right ones and add constants later
-          1, 1, 1, 1, 1, 4);
 
   ElevatorSim sim =
       new ElevatorSim(
@@ -26,13 +25,14 @@ public class SimElevator implements ElevatorIO {
           true,
           3);
 
+  Encoder encoder = new Encoder(0, 1);
+
+  EncoderSim simEncoder = new EncoderSim(encoder);
   @Override
   public void moveToSetpoint(Measure<Velocity<Distance>> setpoint) {
-    sim.setInput(
-        setpoint.in(MetersPerSecond),
-        setpoint.in(MetersPerSecond),
-        setpoint.in(MetersPerSecond),
-        setpoint.in(MetersPerSecond));
+    sim.setInput(setpoint.in(MetersPerSecond));
+    sim.update(0.02);
+    System.out.println("Updating: ...");
   }
 
   @Override
