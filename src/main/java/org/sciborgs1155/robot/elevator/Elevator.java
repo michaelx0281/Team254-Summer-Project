@@ -15,7 +15,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import monologue.Annotations.Log;
 import monologue.Logged;
@@ -30,7 +29,7 @@ public class Elevator extends SubsystemBase implements Logged {
       root.append(new MechanismLigament2d("elevator cart", 3, 90));
 
   @Log.NT private ProfiledPIDController pid = new ProfiledPIDController(kP, kP, kP, constraints);
-  @Log.NT private ElevatorFeedforward ff = new ElevatorFeedforward(kS, kG, kV);
+  @Log.NT private ElevatorFeedforward ff = new ElevatorFeedforward(kS, kG, kV, kA);
 
   @Log.NT private double position = 0;
 
@@ -46,13 +45,16 @@ public class Elevator extends SubsystemBase implements Logged {
 
   public Command moveToHeight(Measure<Distance> height) {
     pid.setGoal(height.in(Meters));
-    System.out.println("Goal: "+ height.in(Meters));
+    for(int i =0; i<1; i++){
+      System.out.println("Goal: " + height.in(Meters));
+      System.out.println("Just a confirmation that printing works outside of the close-control loop");
+    }
+
     return run(
         () -> {
-          System.out.println("I am working...");
           double pidOutput = pid.calculate(elevator.heightFromBase());
-          double ffOutput = ff.calculate(pid.getSetpoint().position);
-
+          double ffOutput = ff.calculate(pid.getSetpoint().velocity);
+          System.out.println("output: " + (pidOutput + ffOutput) + " pidOutput: " + pidOutput);
           elevator.moveToSetpoint(MetersPerSecond.of(pidOutput + ffOutput));
           elevatorVisual.setLength(elevator.heightFromBase());
           position = elevator.heightFromBase();

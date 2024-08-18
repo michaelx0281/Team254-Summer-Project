@@ -1,8 +1,25 @@
 {
   "HALProvider": {
-    "Other Devices": {
+    "DIO": {
       "window": {
-        "visible": false
+        "visible": true
+      }
+    },
+    "Encoders": {
+      "window": {
+        "visible": true
+      }
+    },
+    "Other Devices": {
+      "Talon FX (v6)[0]": {
+        "header": {
+          "open": true
+        }
+      },
+      "Talon FX (v6)[0]/Rotor Sensor": {
+        "header": {
+          "open": true
+        }
       }
     }
   },
@@ -117,7 +134,7 @@
             0.0,
             0.8500000238418579
           ],
-          "height": 338,
+          "height": 156,
           "series": [
             {
               "color": [

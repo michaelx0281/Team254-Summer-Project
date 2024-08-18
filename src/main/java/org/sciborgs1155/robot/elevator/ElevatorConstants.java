@@ -9,13 +9,13 @@ import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Velocity;
 
 public final class ElevatorConstants {
-  public static final double kP = 0.0;
+  public static final double kP = 1.0;
   public static final double kI = 0.0;
-  public static final double kD = 0.0;
+  public static final double kD = 0.5;
 
-  public static final double kV = 0.0;
-  public static final double kA = 0.0;
-  public static final double kS = 0.0;
+  public static final double kV = 1.0;
+  public static final double kA = 1.0;
+  public static final double kS = 1.0;
   public static final double kG = 1.0;
 
   public static final Measure<Velocity<Distance>> maxVelocity = MetersPerSecond.of(1.0);
@@ -33,4 +33,6 @@ public final class ElevatorConstants {
   public static final double massKg = 10.0;
   public static final double radius = 0.05;
   public static final double gearing = 1;
+
+  public static final double DISTANCE_PER_PULSE = 1.0;
 }
