@@ -1,10 +1,5 @@
 {
   "HALProvider": {
-    "DIO": {
-      "window": {
-        "visible": true
-      }
-    },
     "Encoders": {
       "window": {
         "visible": true
@@ -20,6 +15,9 @@
         "header": {
           "open": true
         }
+      },
+      "window": {
+        "visible": false
       }
     }
   },
@@ -70,11 +68,6 @@
           "visible": true
         }
       },
-      "/SmartDashboard/drive quasistatic forward": {
-        "window": {
-          "visible": true
-        }
-      },
       "/SmartDashboard/elevator2D": {
         "window": {
           "visible": true
@@ -120,9 +113,6 @@
         "open": true
       }
     }
-  },
-  "NetworkTables Info": {
-    "visible": true
   },
   "Plot": {
     "Plot <1>": {

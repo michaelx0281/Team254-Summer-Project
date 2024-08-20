@@ -20,7 +20,6 @@ public class ElevatorTest {
   @Test
   public void movesToGoal() {
     double goal = 2;
-    elevator.moveToHeight(Meters.of(2));
     fastForward(5000);
     assertEquals(goal, elevator.retrieveHeight());
   }

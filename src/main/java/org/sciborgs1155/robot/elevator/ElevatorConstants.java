@@ -9,7 +9,7 @@ import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Velocity;
 
 public final class ElevatorConstants {
-  public static final double kP = 1.0;
+  public static final double kP = 3.4;
   public static final double kI = 0.0;
   public static final double kD = 0.5;
 
@@ -35,4 +35,5 @@ public final class ElevatorConstants {
   public static final double gearing = 1;
 
   public static final double DISTANCE_PER_PULSE = 1.0;
+  public static final double ROTOR_OFFSET = 0.0;
 }

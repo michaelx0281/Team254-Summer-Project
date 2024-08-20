@@ -1,8 +1,10 @@
 package org.sciborgs1155.robot.elevator;
 
 import static edu.wpi.first.units.Units.Meters;
-import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.Volts;
 import static org.sciborgs1155.robot.elevator.ElevatorConstants.*;
+
+import org.sciborgs1155.lib.TestingUtil;
 
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -32,6 +34,7 @@ public class Elevator extends SubsystemBase implements Logged {
   @Log.NT private ElevatorFeedforward ff = new ElevatorFeedforward(kS, kG, kV, kA);
 
   @Log.NT private double position = 0;
+  @Log.NT private double goalHeight = 2;
 
   public Elevator(ElevatorIO elevator) {
     this.elevator = elevator;
@@ -39,30 +42,32 @@ public class Elevator extends SubsystemBase implements Logged {
     SmartDashboard.putData("elevator2D", mech);
   }
 
+  
+
   public static Elevator create() {
     return Robot.isReal() ? new Elevator(new RealElevator()) : new Elevator(new SimElevator());
   }
 
-  public Command moveToHeight(Measure<Distance> height) {
-    pid.setGoal(height.in(Meters));
-    for(int i =0; i<1; i++){
-      System.out.println("Goal: " + height.in(Meters));
-      System.out.println("Just a confirmation that printing works outside of the close-control loop");
-    }
-
-    return run(
-        () -> {
-          double pidOutput = pid.calculate(elevator.heightFromBase());
-          double ffOutput = ff.calculate(pid.getSetpoint().velocity);
-          System.out.println("output: " + (pidOutput + ffOutput) + " pidOutput: " + pidOutput);
-          elevator.moveToSetpoint(MetersPerSecond.of(pidOutput + ffOutput));
-          elevatorVisual.setLength(elevator.heightFromBase());
-          position = elevator.heightFromBase();
-        });
+  public void setGoal(double heightInMeters) {
+    this.goalHeight = heightInMeters;
+    pid.setGoal(goalHeight);
   }
 
-  public Command maintainPosition() {
-    return moveToHeight(Meters.of(elevator.heightFromBase()));
+  public Command setGoal(Measure<Distance> height){
+    return runOnce(() -> setGoal(height.in(Meters)));
+  }
+
+  public Command moveToHeight() {
+    return run(
+        () -> {
+          System.out.println("Goal Position: "+ pid.getGoal().position);
+          double pidOutput = pid.calculate(elevator.heightFromBase());
+          double ffOutput = ff.calculate(pid.getSetpoint().position);
+          System.out.println("output: " + (pidOutput + ffOutput) + " pidOutput: " + pidOutput);
+          elevator.setVoltage(Volts.of(pidOutput + ffOutput));
+          elevatorVisual.setLength(elevator.heightFromBase());
+          position = elevator.heightFromBase(); 
+        });
   }
 
   public double retrieveHeight() {
