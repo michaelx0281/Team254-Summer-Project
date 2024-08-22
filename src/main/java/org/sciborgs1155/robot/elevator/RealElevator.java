@@ -4,13 +4,17 @@ import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.Volts;
 import static org.sciborgs1155.robot.elevator.ElevatorConstants.*;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
+import com.ctre.phoenix6.controls.DutyCycleOut;
+import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.MotorTypeValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.units.Distance;
@@ -40,15 +44,16 @@ public class RealElevator implements ElevatorIO {
       .withFeedbackSensorSource(FeedbackSensorSourceValue.RotorSensor)
       .withFeedbackRotorOffset(ROTOR_OFFSET))
     .withMotorOutput(rfxConfigs.MotorOutput
-      .withNeutralMode(NeutralModeValue.Brake)
-    ); 
+      .withNeutralMode(NeutralModeValue.Brake)); 
     
-    lfxConfigs = rfxConfigs.withMotorOutput(rfxConfigs.MotorOutput.withInverted(InvertedValue.CounterClockwise_Positive));
+    // lfxConfigs = rfxConfigs.withMotorOutput(rfxConfigs.MotorOutput.withInverted(InvertedValue.CounterClockwise_Positive));
+    final DutyCycleOut request = new DutyCycleOut(0);
+    lead.setControl(request.withOutput(1.0));
 
-    rFollower.getConfigurator().apply(rfxConfigs);
-    lFollowerA.getConfigurator().apply(lfxConfigs);
-    lFollowerB.getConfigurator().apply(lfxConfigs);
-
+    rFollower.setControl(new Follower(lead.getDeviceID(), false));
+    lFollowerA.setControl(new Follower(lead.getDeviceID(), true));
+    lFollowerB.setControl(new Follower(lead.getDeviceID(), true));
+    
   }
 
   // The talons (there were 4 implemented in the CheesyPuffs' code)

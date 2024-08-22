@@ -17,10 +17,10 @@ public class SimElevator implements ElevatorIO {
       new ElevatorSim(
           LinearSystemId.createElevatorSystem(DCMotor.getMiniCIM(4), massKg, radius, gearing),
           DCMotor.getMiniCIM(4),
-          2, // adjust these values later to the right ones
-          6,
+          -20, // adjust these values later to the right ones
+          20,
           true,
-          4);
+          0);
   // CANcoder encoder = talon.canCod;
   // SimDeviceSim motor = new SimDeviceSim(0);
   // Matrix<N2,N1> currentState;
