@@ -102,7 +102,8 @@ public class Robot extends CommandRobot implements Logged {
                 driver::getRightX,
                 DriveConstants.MAX_ANGULAR_SPEED.in(RadiansPerSecond),
                 DriveConstants.MAX_ANGULAR_ACCEL.in(RadiansPerSecond.per(Second)))));
-    elevator.setDefaultCommand(elevator.moveToHeight());
+    // elevator.setDefaultCommand(
+    //   elevator.moveToHeight(Meters.of(3.5)));
   }
 
   /** Configures trigger -> command bindings */
@@ -114,8 +115,10 @@ public class Robot extends CommandRobot implements Logged {
         .leftBumper()
         .or(driver.rightBumper())
         .onTrue(Commands.runOnce(() -> speedMultiplier = Constants.FULL_SPEED))
-        .onFalse(Commands.run(() -> speedMultiplier = Constants.SLOW_SPEED));
-    operator.x().toggleOnTrue(elevator.setGoal(Meters.of(3)));
-    operator.y().toggleOnTrue(elevator.setGoal(Meters.of(5)));
+        .onFalse(Commands.runOnce(() -> speedMultiplier = Constants.SLOW_SPEED));
+    operator.x().toggleOnTrue(elevator.moveToHeight(Meters.of(3)));
+    operator.y().toggleOnTrue(elevator.moveToHeight(Meters.of(5)));
+    operator.a().onTrue(Commands.runOnce(() -> elevator.stop = true))
+                .onFalse(Commands.runOnce(() -> elevator.stop = false));
   }
 }

@@ -15,18 +15,19 @@ public final class ElevatorConstants {
   public static final double kD = 0.0;
 
   @Log.NT
-  public static final double kV = 1.7;
+  public static final double kV = 1;
   @Log.NT
-  public static final double kA = 0;
+  public static final double kA = 1;
   @Log.NT
   public static final double kS = 1;
   @Log.NT
   public static final double kG = 5.9506;
 
   public static final Measure<Velocity<Distance>> maxVelocity = 
-  MetersPerSecond.of(0.4);
+  MetersPerSecond.of(5);
+  @Log.NT
   public static final Measure<Velocity<Velocity<Distance>>> maxAccel =
-      MetersPerSecondPerSecond.of(10);
+      MetersPerSecondPerSecond.of(1);
 
   // public static final TrapezoidProfile profile = new TrapezoidProfile(constraints);
 

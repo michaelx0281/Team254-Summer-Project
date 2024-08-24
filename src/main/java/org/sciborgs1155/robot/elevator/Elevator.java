@@ -2,6 +2,7 @@ package org.sciborgs1155.robot.elevator;
 
 import static edu.wpi.first.units.Units.Kilograms;
 import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.Volts;
 import static org.sciborgs1155.robot.drive.DriveConstants.CONSTRAINTS;
 import static org.sciborgs1155.robot.elevator.ElevatorConstants.*;
@@ -47,12 +48,13 @@ public class Elevator extends SubsystemBase implements Logged {
       new TrapezoidProfile.Constraints(maxVelocity, maxAccel);  
 
   @Log.NT private ProfiledPIDController pid = new ProfiledPIDController(kP, kI, kD, constraints, 0.02);
-  @Log.NT private ElevatorFeedforward ff = new ElevatorFeedforward(kS, kG, kV, kA);
+  @Log.NT  private ElevatorFeedforward ff = new ElevatorFeedforward(kS, kG, kV, kA);
 
   private SysIdRoutine routine;
 
   @Log.NT private double position = 0;
   @Log.NT private double goalHeight = 2;
+  @Log.NT public boolean stop = false;
 
   public Elevator(ElevatorIO hardware) {
     this.hardware = hardware;
@@ -74,7 +76,7 @@ public class Elevator extends SubsystemBase implements Logged {
     SmartDashboard.putData("elevator quasistatic backward", elevatorSysidQuasistatic(Direction.kForward));
   }
 
-  /*Creates a real-hardware or simulated-hardware elevator */
+  /*Creates an elevator */
   public static Elevator create() {
     return Robot.isReal() ? new Elevator(new RealElevator()) : new Elevator(new SimElevator());
   }
@@ -84,23 +86,26 @@ public class Elevator extends SubsystemBase implements Logged {
     return new Elevator(new NoElevator());
   }
 
-
+  double initVelo = 0;
+  double nextVelo;
   public Command moveToHeight(Measure<Distance> height) {
     System.out.println("Running elevator command.. ");
     return run(
         () -> {
-          pid.setGoal(height.in(Meters));
-          System.out.println("Goal Position: "+ pid.getGoal().position);
-
+          nextVelo = hardware.getSpeed().in(RadiansPerSecond);
+        
           double pidOutput = pid.calculate(hardware.heightFromBase());
-          double ffOutput = ff.calculate(pid.getSetpoint().velocity, 0);
+          double ffOutput = ff.calculate(pid.getSetpoint().velocity, (nextVelo - initVelo)/ 0.02);
 
-          System.out.println("Pid setpoint velo and position: " + pid.getSetpoint().velocity+ " and " + pid.getSetpoint().position);
-          System.out.println("ffoutput: " + (ffOutput) + " pidOutput: " + pidOutput);
+          initVelo = nextVelo;
 
+          // System.out.println("Pid setpoint velo and position: " + pid.getSetpoint().velocity+ " and " + pid.getSetpoint().position);
+          // System.out.println("ffoutput: " + (ffOutput) + " pidOutput: " + pidOutput + " pid velo setpoint: " + pid.getSetpoint().velocity + " pid position setpoint: " + pid.getSetpoint().position
+          // + " goal p: " + pid.getGoal().position + " goal v" + pid.getGoal().velocity);
+          
           hardware.setVoltage(Volts.of(pidOutput+ffOutput));
           position = hardware.heightFromBase(); 
-        });
+        }).onlyWhile(() -> !stop).withName("moveing to goal height in meters...");
   }
 
   public double retrieveHeight() {
@@ -119,4 +124,11 @@ public class Elevator extends SubsystemBase implements Logged {
     return routine.quasistatic(direction);
   }
 
+  
+  @Override
+  public void simulationPeriodic() {
+      // TODO Auto-generated method stub
+      super.simulationPeriodic();
+      pid.setGoal(goalHeight);
+  }
 }

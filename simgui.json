@@ -39,6 +39,8 @@
       "/SmartDashboard/drive dynamic forward": "Command",
       "/SmartDashboard/drive quasistatic backward": "Command",
       "/SmartDashboard/drive quasistatic forward": "Command",
+      "/SmartDashboard/elevator quasistatic backward": "Command",
+      "/SmartDashboard/elevator quasistatic forward": "Command",
       "/SmartDashboard/elevator2D": "Mechanism2d",
       "/SmartDashboard/turn dynamic backward": "Command",
       "/SmartDashboard/turn dynamic forward": "Command",
@@ -102,6 +104,9 @@
           }
         },
         "elevator": {
+          "ElevatorFeedforward##v_/Robot/elevator/ff": {
+            "open": true
+          },
           "open": true,
           "pid": {
             "open": true
@@ -111,8 +116,17 @@
       },
       "Shuffleboard": {
         "open": true
+      },
+      "robot": {
+        "Elevator": {
+          "open": true
+        },
+        "open": true
       }
     }
+  },
+  "NetworkTables Info": {
+    "visible": true
   },
   "Plot": {
     "Plot <1>": {
@@ -124,7 +138,7 @@
             0.0,
             0.8500000238418579
           ],
-          "height": 156,
+          "height": 188,
           "series": [
             {
               "color": [
@@ -143,6 +157,15 @@
                 1.0
               ],
               "id": "NT:/Robot/elevator/position"
+            },
+            {
+              "color": [
+                0.3333333432674408,
+                0.658823549747467,
+                0.4078431725502014,
+                1.0
+              ],
+              "id": "NT:/Robot/elevator/goalHeight"
             }
           ]
         }

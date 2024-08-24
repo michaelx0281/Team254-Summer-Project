@@ -1,6 +1,7 @@
 package org.sciborgs1155.robot.elevator;
 
 import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.Volts;
 import static org.sciborgs1155.robot.elevator.ElevatorConstants.*;
 
@@ -17,6 +18,7 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.MotorTypeValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Velocity;
@@ -25,7 +27,8 @@ import edu.wpi.first.units.Voltage;
 // wtf is this?
 
 public class RealElevator implements ElevatorIO {
-
+  //remember to add the necessary CANcoders / remote encoders 
+  // TODO - SWITCH OUT ALL TALON FX CONTROLLERS WITH TALON SRX!!
   TalonFX lead, rFollower, lFollowerA, lFollowerB;
   TalonFXConfigurator leadConfig = lead.getConfigurator();
   TalonFXConfiguration rfxConfigs = new TalonFXConfiguration();
@@ -35,6 +38,7 @@ public class RealElevator implements ElevatorIO {
     lead.setPosition(0);
     leadConfig.refresh(rfxConfigs);
 
+    /*setting up the motor configs  */
     rfxConfigs.withCurrentLimits(rfxConfigs.CurrentLimits
       .withSupplyCurrentLimit(30)
       .withSupplyCurrentLimitEnable(true)
@@ -48,8 +52,8 @@ public class RealElevator implements ElevatorIO {
     
     // lfxConfigs = rfxConfigs.withMotorOutput(rfxConfigs.MotorOutput.withInverted(InvertedValue.CounterClockwise_Positive));
     final DutyCycleOut request = new DutyCycleOut(0);
-    lead.setControl(request.withOutput(1.0));
-
+    // lead.setControl(request.withOutput(1.0));
+    /* Setting up followers.*/
     rFollower.setControl(new Follower(lead.getDeviceID(), false));
     lFollowerA.setControl(new Follower(lead.getDeviceID(), true));
     lFollowerB.setControl(new Follower(lead.getDeviceID(), true));
@@ -70,6 +74,11 @@ public class RealElevator implements ElevatorIO {
 
   @Override
   public double heightFromBase() {
-    return lead.getPosition().getValue() * rotationFactor;
+    return lead.getPosition().getValueAsDouble() * rotationFactor; //link with a remote sensor
+  }
+
+  @Override
+  public Measure<Velocity<Angle>> getSpeed() {
+    return RadiansPerSecond.of(lead.getRotorVelocity().getValueAsDouble() * 2 * Math.PI); //link with a remote sensor or figure out how accurate the integrated is.
   }
 }
