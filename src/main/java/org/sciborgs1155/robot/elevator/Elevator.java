@@ -7,7 +7,9 @@ import static edu.wpi.first.units.Units.Volts;
 import static org.sciborgs1155.robot.drive.DriveConstants.CONSTRAINTS;
 import static org.sciborgs1155.robot.elevator.ElevatorConstants.*;
 
+import java.io.InputStream;
 import java.util.List;
+import java.util.function.DoubleSupplier;
 
 import org.sciborgs1155.lib.TestingUtil;
 import org.sciborgs1155.lib.Tuning;
@@ -53,14 +55,14 @@ public class Elevator extends SubsystemBase implements Logged {
   private SysIdRoutine routine;
 
   @Log.NT private double position = 0;
-  @Log.NT private double goalHeight = 2;
   @Log.NT public boolean stop = false;
+  @Log.NT public double goalHeight = 0;
 
   public Elevator(ElevatorIO hardware) {
     this.hardware = hardware;
     elevatorVisual.setColor(new Color8Bit(Color.kAqua));
     SmartDashboard.putData("elevator2D", mech);
-    pid.setTolerance(1E-8, 1E-8);
+    pid.setTolerance(1E-3, 1E-3);
 
     routine = new SysIdRoutine(
       new SysIdRoutine.Config(),
@@ -86,26 +88,36 @@ public class Elevator extends SubsystemBase implements Logged {
     return new Elevator(new NoElevator());
   }
 
+  private void setGoal(double height) {
+    goalHeight = height;
+    pid.setGoal(goalHeight);
+  }
+
+  public Command setGoal(Measure<Distance> height) {
+    return runOnce(() -> setGoal(height.in(Meters)));
+  }
+
   double initVelo = 0;
   double nextVelo;
-  public Command moveToHeight(Measure<Distance> height) {
+  public Command moveToHeight() {
     System.out.println("Running elevator command.. ");
+
     return run(
         () -> {
           nextVelo = hardware.getSpeed().in(RadiansPerSecond);
         
           double pidOutput = pid.calculate(hardware.heightFromBase());
-          double ffOutput = ff.calculate(pid.getSetpoint().velocity, (nextVelo - initVelo)/ 0.02);
+          double ffOutput = ff.calculate(pid.getSetpoint().velocity, (nextVelo - initVelo)); // (nextVelo - initVelo)/0.8
 
           initVelo = nextVelo;
 
-          // System.out.println("Pid setpoint velo and position: " + pid.getSetpoint().velocity+ " and " + pid.getSetpoint().position);
-          // System.out.println("ffoutput: " + (ffOutput) + " pidOutput: " + pidOutput + " pid velo setpoint: " + pid.getSetpoint().velocity + " pid position setpoint: " + pid.getSetpoint().position
-          // + " goal p: " + pid.getGoal().position + " goal v" + pid.getGoal().velocity);
+          System.out.println("Pid setpoint velo and position: " + pid.getSetpoint().velocity+ " and " + pid.getSetpoint().position);
+          System.out.println("ffoutput: " + (ffOutput) + " pidOutput: " + pidOutput + " pid velo setpoint: " + pid.getSetpoint().velocity + " pid position setpoint: " + pid.getSetpoint().position
+          + " goal p: " + pid.getGoal().position + " goal v" + pid.getGoal().velocity);
           
           hardware.setVoltage(Volts.of(pidOutput+ffOutput));
           position = hardware.heightFromBase(); 
-        }).onlyWhile(() -> !stop).withName("moveing to goal height in meters...");
+        }).withName("moveing to goal height in meters...");
   }
 
   public double retrieveHeight() {

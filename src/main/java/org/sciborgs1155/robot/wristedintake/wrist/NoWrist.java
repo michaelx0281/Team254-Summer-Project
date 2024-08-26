@@ -1,5 +1,8 @@
 package org.sciborgs1155.robot.wristedintake.wrist;
 
+import static edu.wpi.first.units.Units.Radians;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
+
 import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Velocity;
@@ -10,21 +13,16 @@ import edu.wpi.first.units.Velocity;
 public class NoWrist implements WristIO{
 
     @Override
-    public void setVoltage(double volts) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setVoltage'");
-    }
+    public void setVoltage(double volts) {}
 
     @Override
     public Measure<Angle> getPositionRadians() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getPositionRadians'");
+        return Radians.of(0);
     }
 
     @Override
     public Measure<Velocity<Angle>> getSpeed() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getSpeed'");
+        return RadiansPerSecond.of(0);
     }
 
     

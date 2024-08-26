@@ -14,6 +14,8 @@ import monologue.Annotations.Log;
 
 public class Intake extends SubsystemBase {
   private IntakeIO hardware;
+
+  // TODO make constants for fb and ff controllers
   @Log.NT private PIDController pid = new PIDController(0, 0, 0);
   private SimpleMotorFeedforward ff = new SimpleMotorFeedforward(0, 0, 0);
 

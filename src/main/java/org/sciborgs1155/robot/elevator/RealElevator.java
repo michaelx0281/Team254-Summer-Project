@@ -34,6 +34,8 @@ public class RealElevator implements ElevatorIO {
   TalonFXConfiguration rfxConfigs = new TalonFXConfiguration();
   TalonFXConfiguration lfxConfigs;
 
+  //TODO rename everything, its giving me a headache... -> try to refer to intake
+
   public RealElevator() {
     lead.setPosition(0);
     leadConfig.refresh(rfxConfigs);
@@ -52,7 +54,7 @@ public class RealElevator implements ElevatorIO {
     
     // lfxConfigs = rfxConfigs.withMotorOutput(rfxConfigs.MotorOutput.withInverted(InvertedValue.CounterClockwise_Positive));
     final DutyCycleOut request = new DutyCycleOut(0);
-    // lead.setControl(request.withOutput(1.0));
+    lead.setControl(request.withOutput(1.0));
     /* Setting up followers.*/
     rFollower.setControl(new Follower(lead.getDeviceID(), false));
     lFollowerA.setControl(new Follower(lead.getDeviceID(), true));

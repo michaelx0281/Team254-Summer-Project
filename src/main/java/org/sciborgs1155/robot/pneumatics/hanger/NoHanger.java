@@ -6,15 +6,9 @@ import org.sciborgs1155.robot.pneumatics.PneumaticsIO;
 public class NoHanger implements PneumaticsIO{
 
     @Override
-    public void extend() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'extend'");
-    }
+    public void extend() {}
 
     @Override
-    public void retract() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'retract'");
-    }
+    public void retract() {}
 
 }
