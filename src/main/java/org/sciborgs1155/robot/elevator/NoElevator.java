@@ -9,17 +9,16 @@ import edu.wpi.first.units.Voltage;
 
 public class NoElevator implements ElevatorIO {
 
-    @Override
-    public void setVoltage(Measure<Voltage> volts) {}
+  @Override
+  public void setVoltage(Measure<Voltage> volts) {}
 
-    @Override
-    public double heightFromBase() {
-        return 0;
-    }
+  @Override
+  public double heightFromBase() {
+    return 0;
+  }
 
-    @Override
-    public Measure<Velocity<Angle>> getSpeed() {
-        return RadiansPerSecond.of(0);
-    }
-    
+  @Override
+  public Measure<Velocity<Angle>> getSpeed() {
+    return RadiansPerSecond.of(0);
+  }
 }

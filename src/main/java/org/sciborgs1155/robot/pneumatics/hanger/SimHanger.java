@@ -1,19 +1,23 @@
 package org.sciborgs1155.robot.pneumatics.hanger;
 
+import edu.wpi.first.networktables.BooleanEntry;
+import org.sciborgs1155.lib.Tuning;
 import org.sciborgs1155.robot.pneumatics.PneumaticsIO;
 
 public class SimHanger implements PneumaticsIO {
+  private BooleanEntry entry;
 
-    @Override
-    public void extend() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'extend'");
-    }
+  public SimHanger() {
+    entry = Tuning.entry("/Pneumatics/SimHanger", true);
+  }
 
-    @Override
-    public void retract() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'retract'");
-    }
+  @Override
+  public void extend() {
+    entry.accept(true);
+  }
 
+  @Override
+  public void retract() {
+    entry.accept(false);
+  }
 }

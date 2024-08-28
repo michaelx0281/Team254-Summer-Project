@@ -23,5 +23,5 @@ public class Constants {
           / DriveConstants.MAX_ANGULAR_SPEED.baseUnitMagnitude();
   public static final double SLOW_SPEED = 0.33;
   public static final double FULL_SPEED = 1.0;
-  public static final double RPS_TO_RADIANS_PER_SECOND = 2*Math.PI;
+  public static final double RPS_TO_RADIANS_PER_SECOND = 2 * Math.PI;
 }

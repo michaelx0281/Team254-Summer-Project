@@ -4,15 +4,14 @@
 
 package org.sciborgs1155.robot.pneumatics.hanger;
 
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.sciborgs1155.robot.Robot;
 import org.sciborgs1155.robot.pneumatics.PneumaticsIO;
 
-import edu.wpi.first.hal.SimInt;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
 public class Hanger extends SubsystemBase {
   private PneumaticsIO hardware;
+
   public Hanger(PneumaticsIO hardware) {
     this.hardware = hardware;
   }

@@ -3,12 +3,14 @@ package org.sciborgs1155.robot;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
+import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.Second;
 import static edu.wpi.first.units.Units.Seconds;
 import static edu.wpi.first.wpilibj2.command.button.RobotModeTriggers.*;
 import static org.sciborgs1155.robot.Constants.*;
 
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -26,6 +28,10 @@ import org.sciborgs1155.robot.commands.Autos;
 import org.sciborgs1155.robot.drive.Drive;
 import org.sciborgs1155.robot.drive.DriveConstants;
 import org.sciborgs1155.robot.elevator.Elevator;
+import org.sciborgs1155.robot.pneumatics.forklift.Forklift;
+import org.sciborgs1155.robot.pneumatics.hanger.Hanger;
+import org.sciborgs1155.robot.wristedintake.intake.Intake;
+import org.sciborgs1155.robot.wristedintake.wrist.Wrist;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -42,6 +48,10 @@ public class Robot extends CommandRobot implements Logged {
   // SUBSYSTEMS
   private final Drive drive = Drive.create();
   private final Elevator elevator = Elevator.create();
+  private final Forklift forklift = Forklift.create();
+  private final Hanger hanger = Hanger.create();
+  private final Wrist wrist = Wrist.create();
+  private final Intake intake = Intake.create();
 
   // COMMANDS
   @Log.NT private final Autos autos = new Autos();
@@ -98,12 +108,19 @@ public class Robot extends CommandRobot implements Logged {
                 driver::getLeftY,
                 DriveConstants.MAX_SPEED.in(MetersPerSecond),
                 DriveConstants.MAX_ACCEL.in(MetersPerSecondPerSecond)),
+            // createJoystickStream(
+            //     driver::getRightY,
+            //     DriveConstants.MAX_SPEED.in(MetersPerSecond),
+            //     DriveConstants.MAX_ACCEL.in(MetersPerSecondPerSecond)),
             createJoystickStream(
                 driver::getRightX,
                 DriveConstants.MAX_ANGULAR_SPEED.in(RadiansPerSecond),
                 DriveConstants.MAX_ANGULAR_ACCEL.in(RadiansPerSecond.per(Second)))));
-    elevator.setDefaultCommand(
-      elevator.moveToHeight());
+    elevator.setDefaultCommand(elevator.moveToHeight());
+    forklift.setDefaultCommand(forklift.retract());
+    hanger.setDefaultCommand(hanger.retract());
+    intake.setDefaultCommand(intake.setDesiredSpeed(3));
+    wrist.setDefaultCommand(wrist.setDesiredAngle(Radians.of(Units.degreesToRadians(30))));
   }
 
   /** Configures trigger -> command bindings */
@@ -118,7 +135,11 @@ public class Robot extends CommandRobot implements Logged {
         .onFalse(Commands.runOnce(() -> speedMultiplier = Constants.SLOW_SPEED));
     operator.x().toggleOnTrue(elevator.setGoal(Meters.of(3)));
     operator.y().toggleOnTrue(elevator.setGoal(Meters.of(5)));
-    operator.a().onTrue(Commands.runOnce(() -> elevator.stop = true))
-                .onFalse(Commands.runOnce(() -> elevator.stop = false));
+    operator
+        .a()
+        .onTrue(Commands.runOnce(() -> elevator.stop = true))
+        .onFalse(Commands.runOnce(() -> elevator.stop = false));
+    operator.x().toggleOnTrue(intake.setDesiredSpeed(6));
+    operator.y().toggleOnTrue(intake.setDesiredSpeed(4));
   }
 }

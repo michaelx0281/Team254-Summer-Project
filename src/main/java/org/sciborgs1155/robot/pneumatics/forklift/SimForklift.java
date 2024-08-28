@@ -1,27 +1,23 @@
-package org.sciborgs1155.robot.pneumatics.forklift
-;
+package org.sciborgs1155.robot.pneumatics.forklift;
 
+import edu.wpi.first.networktables.BooleanEntry;
 import org.sciborgs1155.lib.Tuning;
 import org.sciborgs1155.robot.pneumatics.PneumaticsIO;
 
-import edu.wpi.first.networktables.BooleanEntry;
+public class SimForklift implements PneumaticsIO {
+  private BooleanEntry entry;
 
-public class SimForklift implements PneumaticsIO{
+  public SimForklift() {
+    entry = Tuning.entry("/Pneumatics/SimForklift", true);
+  }
 
-    BooleanEntry entry;
+  @Override
+  public void extend() {
+    entry.accept(true);
+  }
 
-    public SimForklift() {
-        Tuning.entry("/Pneumatics/Simforklift", true);
-    } 
-    
-    @Override
-    public void extend() {
-        entry.accept(true);
-    }
-
-    @Override
-    public void retract() {
-        entry.accept(false);
-    }
-
+  @Override
+  public void retract() {
+    entry.accept(false);
+  }
 }

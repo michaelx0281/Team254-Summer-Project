@@ -1,20 +1,28 @@
 package org.sciborgs1155.robot;
 
+import static org.sciborgs1155.lib.TestingUtil.fastForward;
+import static org.sciborgs1155.lib.TestingUtil.run;
+import static org.sciborgs1155.lib.TestingUtil.setupHAL;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.sciborgs1155.robot.drive.Drive;
+
 // import static org.sciborgs1155.lib.TestingUtil.*;
 
 /** Swerve test. Currently incomplete and does nothing. */
 public class SwerveTest {
-  // Drive drive;
+  Drive drive;
 
-  // @BeforeEach
-  // public void setup() {
-  //   setupHAL();
-  //   drive = Drive.create();
-  // }
+  @BeforeEach
+  public void setup() {
+    setupHAL();
+    drive = Drive.create();
+  }
 
-  // @Test
-  // public void reachSetpoint() {
-  //   run(drive.drive(() -> 1, () -> 1, () -> 1));
-  //   fastForward();
-  // }
+  @Test
+  public void reachSetpoint() {
+    run(drive.drive(() -> 1, () -> 1, () -> 1));
+    fastForward();
+  }
 }

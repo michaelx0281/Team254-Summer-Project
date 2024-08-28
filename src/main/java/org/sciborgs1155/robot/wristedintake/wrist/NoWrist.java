@@ -7,23 +7,19 @@ import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Velocity;
 
-/**
- * NoWrist
- */
-public class NoWrist implements WristIO{
+/** NoWrist */
+public class NoWrist implements WristIO {
 
-    @Override
-    public void setVoltage(double volts) {}
+  @Override
+  public void setVoltage(double volts) {}
 
-    @Override
-    public Measure<Angle> getPositionRadians() {
-        return Radians.of(0);
-    }
+  @Override
+  public Measure<Angle> getPositionRadians() {
+    return Radians.of(0);
+  }
 
-    @Override
-    public Measure<Velocity<Angle>> getSpeed() {
-        return RadiansPerSecond.of(0);
-    }
-
-    
+  @Override
+  public Measure<Velocity<Angle>> getSpeed() {
+    return RadiansPerSecond.of(0);
+  }
 }
