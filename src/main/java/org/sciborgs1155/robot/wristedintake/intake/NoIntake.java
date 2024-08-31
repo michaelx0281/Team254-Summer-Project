@@ -32,4 +32,9 @@ public class NoIntake implements IntakeIO {
   public Measure<Velocity<Velocity<Angle>>> getAccel() {
     return RadiansPerSecond.per(Second).of(0);
   }
+
+  @Override
+  public Measure<Angle> getPositionRads() {
+    return Radians.of(0);
+  }
 }

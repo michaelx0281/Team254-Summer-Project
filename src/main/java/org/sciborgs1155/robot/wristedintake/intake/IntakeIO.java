@@ -11,7 +11,9 @@ public interface IntakeIO {
 
   public Measure<Velocity<Angle>> getSpeed();
 
-  public Measure<Velocity<Velocity<Angle>>> getAccel();
+  public Measure<Velocity<Velocity<Angle>>> getAccel(); //TODO might get rid of this some other time, seems kinda a bad idea to be using this
+
+  public Measure<Angle> getPositionRads(); // it makes almost no sense for this method to exist for a flyway, however the log consumer seems to want it so here it is
 
   public Measure<Voltage> voltage();
 }

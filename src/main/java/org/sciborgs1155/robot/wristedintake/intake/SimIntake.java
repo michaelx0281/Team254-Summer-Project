@@ -1,16 +1,19 @@
 package org.sciborgs1155.robot.wristedintake.intake;
 
+import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.Second;
 import static edu.wpi.first.units.Units.Volts;
 import static org.sciborgs1155.robot.wristedintake.intake.IntakeConstants.*;
 
+import edu.wpi.first.math.system.LinearSystem;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Velocity;
 import edu.wpi.first.units.Voltage;
+import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 
 /** SimIntake */
@@ -29,11 +32,24 @@ public class SimIntake implements IntakeIO {
           DCMotor.getMiniCIM(2),
           GEARING);
 
+  // last ditch effort to try to get sysid to work -> creation of another ideal system but js for the motors to get angular position radians...
+  DCMotorSim motorSim = 
+      new DCMotorSim(
+        LinearSystemId.createDCMotorSystem(
+          DCMotor.getMiniCIM(2),
+              MOI,
+              GEARING),
+              DCMotor.getMiniCIM(2),
+              GEARING);
+
   @Override
   public void setVoltage(double voltage) { //TODO use units for this import
     this.volts = Volts.of(voltage);
     sim.setInputVoltage(voltage);
     sim.update(0.02);
+
+    motorSim.setInputVoltage(voltage);
+    motorSim.update(0.02);
   }
 
   @Override
@@ -52,5 +68,10 @@ public class SimIntake implements IntakeIO {
     double accel = (nextVelo - initVelo) / 0.02;
     initVelo = nextVelo;
     return RadiansPerSecond.per(Second).of(accel);
+  }
+
+  @Override
+  public Measure<Angle> getPositionRads() {
+    return Radians.of(motorSim.getAngularPositionRad());
   }
 }

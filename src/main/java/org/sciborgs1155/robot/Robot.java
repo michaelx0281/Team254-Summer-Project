@@ -148,5 +148,6 @@ public class Robot extends CommandRobot implements Logged {
     operator.x().toggleOnTrue(intake.setDesiredSpeed(6));
     operator.y().toggleOnTrue(intake.setDesiredSpeed(4));
     // operator.a().onTrue(routine.run().alongWith(Commands.runOnce(() -> System.out.println("Running sysids... "))));
+    // operator.a().onTrue(routine.intake().alongWith(Commands.runOnce(() -> System.out.println("running sysid on intake"))));
   }
 }

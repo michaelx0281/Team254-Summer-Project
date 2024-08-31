@@ -32,7 +32,7 @@ public class Intake extends SubsystemBase implements Logged {
   private SysIdRoutine routine;
 
 
-  /** Creates a new Intake. */
+  /* Creates a new Intake. */
   public Intake(IntakeIO hardware) {
     this.hardware = hardware;
 
@@ -45,21 +45,24 @@ public class Intake extends SubsystemBase implements Logged {
             log.motor("intake")
               .voltage(hardware.voltage())
               .angularVelocity(hardware.getSpeed())
-              .angularAcceleration(hardware.getAccel());
+              .angularPosition(hardware.getPositionRads());
            },
             this)); //TODO change and use unit library units for output of this method
     
         SmartDashboard.putData("intake dynamic forward", intakeSysidDynamic(Direction.kForward));
         SmartDashboard.putData("intake dynamic backward", intakeSysidDynamic(Direction.kReverse));
         SmartDashboard.putData("intake quasistatic forward", intakeSysidDynamic(Direction.kForward));
-        SmartDashboard.putData("intake quasisttic backward", intakeSysidDynamic(Direction.kReverse));
+        SmartDashboard.putData("intake quasistatic backward", intakeSysidDynamic(Direction.kReverse));
 
   }
 
+
+  /* Creates a new Intake subsystem */
   public static Intake create() {
     return Robot.isReal() ? new Intake(new RealIntake()) : new Intake(new SimIntake());
   }
 
+  /* Creates an empty Intake subsystem */
   public static Intake none() {
     return new Intake(new NoIntake());
   }
@@ -75,6 +78,11 @@ public class Intake extends SubsystemBase implements Logged {
           hardware.setVoltage(pidOutput + ffOutput);
           velocityRadsPS = hardware.getSpeed().in(RadiansPerSecond);
         });
+  }
+
+  /* The method of choice for an intake - excuse me - BECAUSE ITS A GODD*MN INTAKE AND DOESN"T NEED A PID (Totally not bc my pid isn't working very well...) */
+  public Command directSetVoltage(Measure<Voltage> volts) {
+    return run(() -> hardware.setVoltage(volts.in(Volts)));
   }
 
   /* Returns velocity of intake in RadsPS */

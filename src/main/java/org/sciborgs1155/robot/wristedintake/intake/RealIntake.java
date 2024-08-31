@@ -78,4 +78,9 @@ public class RealIntake implements IntakeIO {
   public Measure<Velocity<Velocity<Angle>>> getAccel() {
     return RadiansPerSecond.per(Second).of(right.getAcceleration().getValueAsDouble() * Constants.RPS_TO_RADIANS_PER_SECOND);
   }
+
+  @Override
+  public Measure<Angle> getPositionRads() {
+    return Radians.of(right.getRotorPosition().getValueAsDouble() * Constants.RPS_TO_RADIANS_PER_SECOND);
+  }
 }

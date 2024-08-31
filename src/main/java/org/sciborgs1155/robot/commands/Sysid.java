@@ -67,4 +67,13 @@ public class Sysid {
                         Commands.run(() -> System.out.println("Ended all routines"))
                     );
     }
+
+    public Command intake() {
+        return  intake.intakeSysidDynamic(Direction.kForward).andThen(
+                    intake.intakeSysidDynamic(Direction.kReverse)).andThen(
+                        intake.intakeSysidQuasistatic(Direction.kForward)).andThen(
+                            intake.intakeSysidQuasistatic(Direction.kReverse)).andThen(
+                                Commands.run(() -> System.out.println("Done setting up intake!"))
+                            );
+    }
 }
