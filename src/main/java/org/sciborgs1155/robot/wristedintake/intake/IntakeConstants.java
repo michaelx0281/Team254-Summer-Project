@@ -9,11 +9,11 @@ public class IntakeConstants {
   public static final double GEARING = 5; // I think this is what 5:1 reduction means?
   public static final double MOI = 5;
 
-  public static final double kP = 2;
+  public static final double kP = 0.73633;
   public static final double kI = 0.0;
   public static final double kD = 0.0;
 
-  public static final double kV = 0.046; // .306 kV .262 kA for GEARING = 30
-  public static final double kA = 0.045; // .046 kV .045 kA for GEARING = 1?
-  public static final double kS = 0;
+  public static final double kV = 0.68627; // .306 kV .262 kA for GEARING = 30
+  public static final double kA = 26.448; // .046 kV .045 kA for GEARING = 1?
+  public static final double kS = 0.016579;
 }

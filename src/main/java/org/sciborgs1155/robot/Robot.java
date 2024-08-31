@@ -103,29 +103,29 @@ public class Robot extends CommandRobot implements Logged {
    * running on a subsystem.
    */
   private void configureSubsystemDefaults() {
-    // drive.setDefaultCommand( //TODO change back from commented after running all of the sysIds and confirmation of values
-    //     drive.drive(
-    //         createJoystickStream(
-    //             driver::getLeftX,
-    //             DriveConstants.MAX_SPEED.in(MetersPerSecond),
-    //             DriveConstants.MAX_ACCEL.in(MetersPerSecondPerSecond)),
-    //         createJoystickStream(
-    //             driver::getLeftY,
-    //             DriveConstants.MAX_SPEED.in(MetersPerSecond),
-    //             DriveConstants.MAX_ACCEL.in(MetersPerSecondPerSecond)),
-    //         // createJoystickStream(
-    //         //     driver::getRightY,
-    //         //     DriveConstants.MAX_SPEED.in(MetersPerSecond),
-    //         //     DriveConstants.MAX_ACCEL.in(MetersPerSecondPerSecond)),
-    //         createJoystickStream(
-    //             driver::getRightX,
-    //             DriveConstants.MAX_ANGULAR_SPEED.in(RadiansPerSecond),
-    //             DriveConstants.MAX_ANGULAR_ACCEL.in(RadiansPerSecond.per(Second)))));
-    // elevator.setDefaultCommand(elevator.moveToHeight());
-    // forklift.setDefaultCommand(forklift.retract());
-    // hanger.setDefaultCommand(hanger.retract());
-    // intake.setDefaultCommand(intake.setDesiredSpeed(3));
-    // wrist.setDefaultCommand(wrist.setDesiredAngle(Radians.of(Units.degreesToRadians(42))));
+    drive.setDefaultCommand( //TODO change back from commented after running all of the sysIds and confirmation of values
+        drive.drive(
+            createJoystickStream(
+                driver::getLeftX,
+                DriveConstants.MAX_SPEED.in(MetersPerSecond),
+                DriveConstants.MAX_ACCEL.in(MetersPerSecondPerSecond)),
+            createJoystickStream(
+                driver::getLeftY,
+                DriveConstants.MAX_SPEED.in(MetersPerSecond),
+                DriveConstants.MAX_ACCEL.in(MetersPerSecondPerSecond)),
+            // createJoystickStream(
+            //     driver::getRightY,
+            //     DriveConstants.MAX_SPEED.in(MetersPerSecond),
+            //     DriveConstants.MAX_ACCEL.in(MetersPerSecondPerSecond)),
+            createJoystickStream(
+                driver::getRightX,
+                DriveConstants.MAX_ANGULAR_SPEED.in(RadiansPerSecond),
+                DriveConstants.MAX_ANGULAR_ACCEL.in(RadiansPerSecond.per(Second)))));
+    elevator.setDefaultCommand(elevator.moveToHeight());
+    forklift.setDefaultCommand(forklift.retract());
+    hanger.setDefaultCommand(hanger.retract());
+    intake.setDefaultCommand(intake.setDesiredSpeed(3));
+    wrist.setDefaultCommand(wrist.setDesiredAngle(Radians.of(Units.degreesToRadians(42))));
   }
 
   /** Configures trigger -> command bindings */
@@ -147,6 +147,6 @@ public class Robot extends CommandRobot implements Logged {
         .onFalse(Commands.runOnce(() -> elevator.stop = false));
     operator.x().toggleOnTrue(intake.setDesiredSpeed(6));
     operator.y().toggleOnTrue(intake.setDesiredSpeed(4));
-    operator.a().onTrue(routine.run().alongWith(Commands.runOnce(() -> System.out.println("Running sysids... "))));
+    // operator.a().onTrue(routine.run().alongWith(Commands.runOnce(() -> System.out.println("Running sysids... "))));
   }
 }
