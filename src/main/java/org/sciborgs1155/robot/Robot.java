@@ -13,6 +13,8 @@ import static org.sciborgs1155.robot.Constants.*;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ProxyCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -25,6 +27,7 @@ import org.sciborgs1155.lib.FaultLogger;
 import org.sciborgs1155.lib.InputStream;
 import org.sciborgs1155.robot.Ports.OI;
 import org.sciborgs1155.robot.commands.Autos;
+import org.sciborgs1155.robot.commands.Sysid;
 import org.sciborgs1155.robot.drive.Drive;
 import org.sciborgs1155.robot.drive.DriveConstants;
 import org.sciborgs1155.robot.elevator.Elevator;
@@ -54,7 +57,9 @@ public class Robot extends CommandRobot implements Logged {
   private final Intake intake = Intake.create();
 
   // COMMANDS
-  @Log.NT private final Autos autos = new Autos();
+  Sysid routine = new Sysid(drive, elevator, intake, wrist);
+  //AUTO
+  @Log.NT private SendableChooser<Command> autos = Autos.configureAutos(drive, elevator, hanger, forklift, intake, wrist);
 
   @Log.NT private double speedMultiplier = Constants.FULL_SPEED;
 
@@ -98,34 +103,35 @@ public class Robot extends CommandRobot implements Logged {
    * running on a subsystem.
    */
   private void configureSubsystemDefaults() {
-    drive.setDefaultCommand(
-        drive.drive(
-            createJoystickStream(
-                driver::getLeftX,
-                DriveConstants.MAX_SPEED.in(MetersPerSecond),
-                DriveConstants.MAX_ACCEL.in(MetersPerSecondPerSecond)),
-            createJoystickStream(
-                driver::getLeftY,
-                DriveConstants.MAX_SPEED.in(MetersPerSecond),
-                DriveConstants.MAX_ACCEL.in(MetersPerSecondPerSecond)),
-            // createJoystickStream(
-            //     driver::getRightY,
-            //     DriveConstants.MAX_SPEED.in(MetersPerSecond),
-            //     DriveConstants.MAX_ACCEL.in(MetersPerSecondPerSecond)),
-            createJoystickStream(
-                driver::getRightX,
-                DriveConstants.MAX_ANGULAR_SPEED.in(RadiansPerSecond),
-                DriveConstants.MAX_ANGULAR_ACCEL.in(RadiansPerSecond.per(Second)))));
-    elevator.setDefaultCommand(elevator.moveToHeight());
-    forklift.setDefaultCommand(forklift.retract());
-    hanger.setDefaultCommand(hanger.retract());
-    intake.setDefaultCommand(intake.setDesiredSpeed(3));
-    wrist.setDefaultCommand(wrist.setDesiredAngle(Radians.of(Units.degreesToRadians(30))));
+    // drive.setDefaultCommand( //TODO change back from commented after running all of the sysIds and confirmation of values
+    //     drive.drive(
+    //         createJoystickStream(
+    //             driver::getLeftX,
+    //             DriveConstants.MAX_SPEED.in(MetersPerSecond),
+    //             DriveConstants.MAX_ACCEL.in(MetersPerSecondPerSecond)),
+    //         createJoystickStream(
+    //             driver::getLeftY,
+    //             DriveConstants.MAX_SPEED.in(MetersPerSecond),
+    //             DriveConstants.MAX_ACCEL.in(MetersPerSecondPerSecond)),
+    //         // createJoystickStream(
+    //         //     driver::getRightY,
+    //         //     DriveConstants.MAX_SPEED.in(MetersPerSecond),
+    //         //     DriveConstants.MAX_ACCEL.in(MetersPerSecondPerSecond)),
+    //         createJoystickStream(
+    //             driver::getRightX,
+    //             DriveConstants.MAX_ANGULAR_SPEED.in(RadiansPerSecond),
+    //             DriveConstants.MAX_ANGULAR_ACCEL.in(RadiansPerSecond.per(Second)))));
+    // elevator.setDefaultCommand(elevator.moveToHeight());
+    // forklift.setDefaultCommand(forklift.retract());
+    // hanger.setDefaultCommand(hanger.retract());
+    // intake.setDefaultCommand(intake.setDesiredSpeed(3));
+    // wrist.setDefaultCommand(wrist.setDesiredAngle(Radians.of(Units.degreesToRadians(42))));
   }
 
   /** Configures trigger -> command bindings */
   private void configureBindings() {
-    autonomous().whileTrue(new ProxyCommand(autos::get));
+    autonomous().whileTrue(Commands.deferredProxy(autos::getSelected));
+
     FaultLogger.onFailing(f -> Commands.print(f.toString()));
 
     driver
@@ -141,5 +147,6 @@ public class Robot extends CommandRobot implements Logged {
         .onFalse(Commands.runOnce(() -> elevator.stop = false));
     operator.x().toggleOnTrue(intake.setDesiredSpeed(6));
     operator.y().toggleOnTrue(intake.setDesiredSpeed(4));
+    operator.a().onTrue(routine.run().alongWith(Commands.runOnce(() -> System.out.println("Running sysids... "))));
   }
 }

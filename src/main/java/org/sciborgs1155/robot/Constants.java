@@ -4,6 +4,9 @@ import static edu.wpi.first.units.Units.*;
 
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Time;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
+
 import org.sciborgs1155.robot.drive.DriveConstants;
 
 /**
@@ -24,4 +27,9 @@ public class Constants {
   public static final double SLOW_SPEED = 0.33;
   public static final double FULL_SPEED = 1.0;
   public static final double RPS_TO_RADIANS_PER_SECOND = 2 * Math.PI;
+
+   /** Returns the robot's alliance. */
+  public static Alliance alliance() {
+    return DriverStation.getAlliance().orElse(Alliance.Blue);
+  }
 }

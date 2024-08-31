@@ -1,6 +1,9 @@
 {
   "NetworkTables": {
     "transitory": {
+      "Pneumatics": {
+        "open": true
+      },
       "Robot": {
         "drive": {
           "frontRight": {
@@ -45,21 +48,44 @@
       "/Robot/drive/rearLeft/turnFeedback": "PIDController",
       "/Robot/drive/rearRight/driveFeedback": "PIDController",
       "/Robot/drive/rearRight/turnFeedback": "PIDController",
+      "/Robot/elevator/pid": "ProfiledPIDController",
+      "/Robot/intake/pid": "PIDController",
+      "/Robot/wrist/pid": "ProfiledPIDController",
       "/SmartDashboard/drive dynamic backward": "Command",
       "/SmartDashboard/drive dynamic forward": "Command",
       "/SmartDashboard/drive quasistatic backward": "Command",
       "/SmartDashboard/drive quasistatic forward": "Command",
+      "/SmartDashboard/elevator quasistatic backward": "Command",
+      "/SmartDashboard/elevator quasistatic forward": "Command",
+      "/SmartDashboard/elevator2D": "Mechanism2d",
       "/SmartDashboard/turn dynamic backward": "Command",
       "/SmartDashboard/turn dynamic forward": "Command",
       "/SmartDashboard/turn quasistatic backward": "Command",
       "/SmartDashboard/turn quasistatic forward": "Command"
+    },
+    "windows": {
+      "/Robot/drive/field2d": {
+        "bottom": 370,
+        "builtin": "2018 Power Up",
+        "height": 8.229599952697754,
+        "left": 125,
+        "right": 827,
+        "top": 20,
+        "width": 16.459199905395508,
+        "window": {
+          "visible": true
+        }
+      }
     }
   },
   "NetworkTables Info": {
+    "Connections": {
+      "open": true
+    },
     "visible": true
   },
   "NetworkTables Settings": {
     "mode": "Client (NT3)",
-    "serverTeam": "1155"
+    "serverTeam": "localhost"
   }
 }

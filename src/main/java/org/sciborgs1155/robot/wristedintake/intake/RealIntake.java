@@ -1,6 +1,7 @@
 package org.sciborgs1155.robot.wristedintake.intake;
 
 import static edu.wpi.first.units.Units.RadiansPerSecond;
+import static edu.wpi.first.units.Units.Volts;
 import static org.sciborgs1155.robot.Constants.*;
 import static org.sciborgs1155.robot.wristedintake.intake.IntakeConstants.*;
 
@@ -16,6 +17,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Velocity;
+import edu.wpi.first.units.Voltage;
 
 /** RealIntake */
 public class RealIntake implements IntakeIO {
@@ -60,5 +62,10 @@ public class RealIntake implements IntakeIO {
   public Measure<Velocity<Angle>> getSpeed() {
     return RadiansPerSecond.of(
         right.getRotorVelocity().getValueAsDouble() * RPS_TO_RADIANS_PER_SECOND);
+  }
+
+  @Override
+  public Measure<Voltage> voltage() {
+    return Volts.of(right.getMotorVoltage().getValueAsDouble());
   }
 }

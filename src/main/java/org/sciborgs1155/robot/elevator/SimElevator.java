@@ -13,6 +13,9 @@ import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj.simulation.ElevatorSim;
 
 public class SimElevator implements ElevatorIO {
+
+  private Measure<Voltage> volts;
+
   ElevatorSim sim =
       new ElevatorSim(
           LinearSystemId.createElevatorSystem(DCMotor.getMiniCIM(4), massKg, radius, gearing),
@@ -24,7 +27,8 @@ public class SimElevator implements ElevatorIO {
 
   @Override
   public void setVoltage(Measure<Voltage> volts) {
-    sim.setInput(volts.in(Volts));
+    this.volts = volts;
+    sim.setInputVoltage(volts.in(Volts));
     sim.update(0.02);
   }
 
@@ -41,5 +45,10 @@ public class SimElevator implements ElevatorIO {
             / 1
             * 2
             * Math.PI); // TODO change '1' to a constant that scales Rotations to Meters
+  }
+
+  @Override
+  public Measure<Voltage> voltage() {
+    return volts;
   }
 }

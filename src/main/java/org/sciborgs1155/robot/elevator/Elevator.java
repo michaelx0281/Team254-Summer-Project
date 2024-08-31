@@ -1,10 +1,13 @@
 package org.sciborgs1155.robot.elevator;
 
 import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.Volts;
 import static org.sciborgs1155.lib.Tuning.*;
 import static org.sciborgs1155.robot.elevator.ElevatorConstants.*;
+
+import java.util.List;
 
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -15,6 +18,7 @@ import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.sysid.SysIdRoutineLog;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -53,8 +57,13 @@ public class Elevator extends SubsystemBase implements Logged {
   @Log.NT private ElevatorFeedforward ff = new ElevatorFeedforward(kS, kG, kV, kA);
 
   private SysIdRoutine routine;
+  // private SysIdRoutineLog dynamicF, dynamicB, quasiF, quasiB;
+  // private List<SysIdRoutineLog> logs;
+  private SysIdRoutineLog log;
 
-  @Log.NT private double position = 0;
+  @Log.NT private double position = 0; 
+  @Log.NT private double velocity = 0;
+  @Log.NT private double volts = 0;
   @Log.NT public boolean stop = false;
   @Log.NT public double goalHeight = 0;
 
@@ -64,15 +73,27 @@ public class Elevator extends SubsystemBase implements Logged {
     SmartDashboard.putData("elevator2D", mech);
     pid.setTolerance(3E-3, 3E-3);
 
+    // dynamicF = new SysIdRoutineLog("elevator-dynamic-F");
+    // dynamicB = new SysIdRoutineLog("elevator-dynamic-B");
+    // quasiF = new SysIdRoutineLog("elevator-quasi-F");
+    // quasiB = new SysIdRoutineLog("elevator-quasi-B");
+
+    // logs.add(0, dynamicF);
+    // logs.add(1, dynamicB);
+    // logs.add(2, quasiF);
+    // logs.add(3, quasiB);
+
+    log = new SysIdRoutineLog("elevator");
+
     routine =
         new SysIdRoutine(
             new SysIdRoutine.Config(),
             new SysIdRoutine.Mechanism(volts -> hardware.setVoltage(volts), null, this));
 
     SmartDashboard.putData(
-        "elevator quasistatic forward", elevatorSysidDynamic(Direction.kForward));
+        "elevator dynamic forward", elevatorSysidDynamic(Direction.kForward));
     SmartDashboard.putData(
-        "elevator quasistatic backward", elevatorSysidDynamic(Direction.kForward));
+        "elevator dynamic backward", elevatorSysidDynamic(Direction.kForward));
     SmartDashboard.putData(
         "elevator quasistatic forward", elevatorSysidQuasistatic(Direction.kForward));
     SmartDashboard.putData(
@@ -148,5 +169,7 @@ public class Elevator extends SubsystemBase implements Logged {
     // TODO Auto-generated method stub
     super.simulationPeriodic();
     pid.setGoal(goalHeight);
+    position = hardware.heightFromBase();
+    velocity = hardware.getSpeed().in(RadiansPerSecond);
   }
 }

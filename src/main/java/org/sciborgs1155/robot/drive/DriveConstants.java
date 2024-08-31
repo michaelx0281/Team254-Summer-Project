@@ -24,6 +24,9 @@ public final class DriveConstants {
   public static final Measure<Distance> TRACK_WIDTH = Meters.of(0.5715);
   // Distance between front and back wheels on robot
   public static final Measure<Distance> WHEEL_BASE = Meters.of(0.5715);
+  //Distance from the center to any wheel of the robot
+  public static final Measure<Distance> RADIUS = TRACK_WIDTH.divide(2).times(Math.sqrt(2));
+  //TODO find a CHASIS_WIDTH?
 
   public static final Translation2d[] MODULE_OFFSET = {
     new Translation2d(WHEEL_BASE.divide(2), TRACK_WIDTH.divide(2)), // front left

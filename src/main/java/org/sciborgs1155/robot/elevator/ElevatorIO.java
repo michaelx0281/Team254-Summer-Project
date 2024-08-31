@@ -11,4 +11,6 @@ public interface ElevatorIO {
   public Measure<Velocity<Angle>> getSpeed();
 
   public double heightFromBase();
+
+  public Measure<Voltage> voltage();
 }

@@ -5,13 +5,17 @@
 package org.sciborgs1155.robot.wristedintake.intake;
 
 import static edu.wpi.first.units.Units.RadiansPerSecond;
+import static edu.wpi.first.units.Units.Volts;
 import static org.sciborgs1155.robot.wristedintake.intake.IntakeConstants.*;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.units.*;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import monologue.Annotations.Log;
 import monologue.Logged;
 import org.sciborgs1155.robot.Robot;
@@ -25,9 +29,23 @@ public class Intake extends SubsystemBase implements Logged {
   @Log.NT private PIDController pid = new PIDController(kP, kI, kD);
   @Log.NT private SimpleMotorFeedforward ff = new SimpleMotorFeedforward(kS, kV, kA);
 
+  private SysIdRoutine routine;
+
+
   /** Creates a new Intake. */
   public Intake(IntakeIO hardware) {
     this.hardware = hardware;
+
+    routine = 
+      new SysIdRoutine(
+        new SysIdRoutine.Config(), //the line below possibly needs a form of log to be added
+        new SysIdRoutine.Mechanism(volts -> hardware.setVoltage(volts.in(Volts)), null, this)); //TODO change and use unit library units for output of this method
+    
+        SmartDashboard.putData("intake dynamic forward", intakeSysidDynamic(Direction.kForward));
+        SmartDashboard.putData("intake dynamic backward", intakeSysidDynamic(Direction.kReverse));
+        SmartDashboard.putData("intake quasistatic forward", intakeSysidDynamic(Direction.kForward));
+        SmartDashboard.putData("intake quasisttic backward", intakeSysidDynamic(Direction.kReverse));
+
   }
 
   public static Intake create() {
@@ -69,6 +87,14 @@ public class Intake extends SubsystemBase implements Logged {
   /* Stops intake. */
   public Command stopImmediately() {
     return runOnce(() -> hardware.setVoltage(0));
+  }
+
+  public Command intakeSysidDynamic(SysIdRoutine.Direction direction){
+    return routine.dynamic(direction);
+  }
+
+  public Command intakeSysidQuasistatic(SysIdRoutine.Direction direction) {
+    return routine.quasistatic(direction);
   }
 
   @Override

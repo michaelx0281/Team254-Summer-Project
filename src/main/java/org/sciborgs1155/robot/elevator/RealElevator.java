@@ -85,4 +85,9 @@ public class RealElevator implements ElevatorIO {
             * 2
             * Math.PI); // link with a remote sensor or figure out how accurate the integrated is.
   }
+
+  @Override
+  public Measure<Voltage> voltage() {
+    return Volts.of(lead.getMotorVoltage().getValueAsDouble());
+  }
 }

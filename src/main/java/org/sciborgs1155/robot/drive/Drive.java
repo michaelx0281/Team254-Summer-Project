@@ -31,6 +31,7 @@ import org.photonvision.EstimatedRobotPose;
 import org.sciborgs1155.lib.InputStream;
 import org.sciborgs1155.robot.Constants;
 import org.sciborgs1155.robot.Robot;
+import org.sciborgs1155.robot.drive.DriveConstants.Rotation;
 
 public class Drive extends SubsystemBase implements Logged, AutoCloseable {
 
@@ -126,8 +127,12 @@ public class Drive extends SubsystemBase implements Logged, AutoCloseable {
    * @return The pose.
    */
   @Log.NT
-  public Pose2d getPose() {
+  public Pose2d pose() {
     return odometry.getEstimatedPosition();
+  }
+
+  public Rotation2d heading() {
+    return pose().getRotation();
   }
 
   /**
@@ -178,7 +183,7 @@ public class Drive extends SubsystemBase implements Logged, AutoCloseable {
                     vx.get(),
                     vy.get(),
                     pid.calculate(
-                        getPose().getRotation().getRadians(), heading.get().getRadians()))));
+                        pose().getRotation().getRadians(), heading.get().getRadians()))));
   }
 
   /**
@@ -187,7 +192,7 @@ public class Drive extends SubsystemBase implements Logged, AutoCloseable {
    * @param speeds The desired field relative chassis speeds.
    */
   public void driveFieldRelative(ChassisSpeeds speeds) {
-    driveRobotRelative(ChassisSpeeds.fromFieldRelativeSpeeds(speeds, getPose().getRotation()));
+    driveRobotRelative(ChassisSpeeds.fromFieldRelativeSpeeds(speeds, pose().getRotation()));
   }
 
   /**
@@ -248,10 +253,16 @@ public class Drive extends SubsystemBase implements Logged, AutoCloseable {
     return modules.stream().map(SwerveModule::desiredState).toArray(SwerveModuleState[]::new);
   }
 
-  /** Returns the chassis speed. */
+  /** Returns the robot-relative chassis speed. */
   @Log.NT
-  public ChassisSpeeds getChassisSpeed() {
+  public ChassisSpeeds getRobotRelativeChassisSpeeds() {
     return kinematics.toChassisSpeeds(getModuleStates());
+  }
+
+    /** Returns the field-relative chassis speeds. */
+  @Log.NT
+  public ChassisSpeeds getFieldRelativeChassisSpeeds() {
+    return ChassisSpeeds.fromRobotRelativeSpeeds(getRobotRelativeChassisSpeeds(), heading());
   }
 
   /** Updates pose estimation based on provided {@link EstimatedRobotPose} */
@@ -266,12 +277,12 @@ public class Drive extends SubsystemBase implements Logged, AutoCloseable {
   public void periodic() {
     odometry.update(Robot.isReal() ? gyro.getRotation2d() : simRotation, getModulePositions());
 
-    field2d.setRobotPose(getPose());
+    field2d.setRobotPose(pose());
 
     for (int i = 0; i < modules2d.length; i++) {
       var module = modules.get(i);
       var transform = new Transform2d(MODULE_OFFSET[i], module.position().angle);
-      modules2d[i].setPose(getPose().transformBy(transform));
+      modules2d[i].setPose(pose().transformBy(transform));
     }
   }
 
@@ -280,7 +291,7 @@ public class Drive extends SubsystemBase implements Logged, AutoCloseable {
     simRotation =
         simRotation.rotateBy(
             Rotation2d.fromRadians(
-                getChassisSpeed().omegaRadiansPerSecond * Constants.PERIOD.in(Seconds)));
+                getRobotRelativeChassisSpeeds().omegaRadiansPerSecond * Constants.PERIOD.in(Seconds)));
   }
 
   /** Stops drivetrain */
