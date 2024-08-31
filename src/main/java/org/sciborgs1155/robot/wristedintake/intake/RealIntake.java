@@ -1,9 +1,12 @@
 package org.sciborgs1155.robot.wristedintake.intake;
 
+import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.Volts;
 import static org.sciborgs1155.robot.Constants.*;
 import static org.sciborgs1155.robot.wristedintake.intake.IntakeConstants.*;
+
+import org.sciborgs1155.robot.Constants;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
@@ -16,11 +19,13 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.Time;
 import edu.wpi.first.units.Velocity;
 import edu.wpi.first.units.Voltage;
 
 /** RealIntake */
 public class RealIntake implements IntakeIO {
+  private static final Time Second = null;
   // Using TalonFX and CTRE 6 implementations
   TalonFX right = new TalonFX(0, "rio");
   TalonFX left = new TalonFX(1, "rio");
@@ -67,5 +72,10 @@ public class RealIntake implements IntakeIO {
   @Override
   public Measure<Voltage> voltage() {
     return Volts.of(right.getMotorVoltage().getValueAsDouble());
+  }
+
+  @Override
+  public Measure<Velocity<Velocity<Angle>>> getAccel() {
+    return RadiansPerSecond.per(Second).of(right.getAcceleration().getValueAsDouble() * Constants.RPS_TO_RADIANS_PER_SECOND);
   }
 }

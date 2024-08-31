@@ -11,5 +11,7 @@ public interface IntakeIO {
 
   public Measure<Velocity<Angle>> getSpeed();
 
+  public Measure<Velocity<Velocity<Angle>>> getAccel();
+
   public Measure<Voltage> voltage();
 }

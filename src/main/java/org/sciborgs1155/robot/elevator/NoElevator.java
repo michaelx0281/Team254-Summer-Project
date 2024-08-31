@@ -1,9 +1,9 @@
 package org.sciborgs1155.robot.elevator;
 
-import static edu.wpi.first.units.Units.RadiansPerSecond;
+import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.Volts;
 
-import edu.wpi.first.units.Angle;
+import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Velocity;
 import edu.wpi.first.units.Voltage;
@@ -19,8 +19,8 @@ public class NoElevator implements ElevatorIO {
   }
 
   @Override
-  public Measure<Velocity<Angle>> getSpeed() {
-    return RadiansPerSecond.of(0);
+  public Measure<Velocity<Distance>> getVelocity() {
+    return MetersPerSecond.of(0);
   }
 
   @Override

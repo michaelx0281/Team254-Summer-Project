@@ -42,7 +42,15 @@ public class Wrist extends SubsystemBase implements Logged {
     routine = 
       new SysIdRoutine(
         new SysIdRoutine.Config(), //the line below possibly needs a form of log to be added
-        new SysIdRoutine.Mechanism(volts -> hardware.setVoltage(volts.in(Volts)), null, this)); //TODO change and use unit library units for output of this method
+        new SysIdRoutine.Mechanism(
+          volts -> hardware.setVoltage(volts.in(Volts)),
+           log -> {
+            log.motor("wrist")
+              .voltage(hardware.voltage())
+              .angularPosition(hardware.getPositionRadians())
+              .angularVelocity(hardware.getSpeed());
+           },
+            this));
     
         SmartDashboard.putData("wrist dynamic forward", wristSysidDynamic(Direction.kForward));
         SmartDashboard.putData("wrist dynamic backward", wristSysidDynamic(Direction.kReverse));

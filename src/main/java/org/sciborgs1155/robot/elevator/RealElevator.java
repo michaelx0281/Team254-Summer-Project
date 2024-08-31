@@ -1,6 +1,7 @@
 package org.sciborgs1155.robot.elevator;
 
 import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.Volts;
 import static org.sciborgs1155.robot.elevator.ElevatorConstants.*;
@@ -79,11 +80,8 @@ public class RealElevator implements ElevatorIO {
   }
 
   @Override
-  public Measure<Velocity<Angle>> getSpeed() {
-    return RadiansPerSecond.of(
-        lead.getRotorVelocity().getValueAsDouble()
-            * 2
-            * Math.PI); // link with a remote sensor or figure out how accurate the integrated is.
+  public Measure<Velocity<Distance>> getVelocity() {
+    return MetersPerSecond.of(lead.getVelocity().getValueAsDouble() * CONVERSION.in(Meters));
   }
 
   @Override

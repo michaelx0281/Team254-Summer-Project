@@ -1,5 +1,6 @@
 package org.sciborgs1155.robot.elevator;
 
+import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
 
@@ -36,4 +37,5 @@ public final class ElevatorConstants {
 
   public static final double DISTANCE_PER_PULSE = 1.0;
   public static final double ROTOR_OFFSET = 0.0;
+  public static final Measure<Distance> CONVERSION = Meters.of(Units.inchesToMeters(6));
 }

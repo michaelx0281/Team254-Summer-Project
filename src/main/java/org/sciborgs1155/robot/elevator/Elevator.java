@@ -88,7 +88,16 @@ public class Elevator extends SubsystemBase implements Logged {
     routine =
         new SysIdRoutine(
             new SysIdRoutine.Config(),
-            new SysIdRoutine.Mechanism(volts -> hardware.setVoltage(volts), null, this));
+            new SysIdRoutine.Mechanism(
+              volts -> hardware.setVoltage(volts),
+               log -> {
+                //Record frame
+                log.motor("elevator-lead")
+                  .voltage(hardware.voltage())
+                  .linearPosition(Meters.of(hardware.heightFromBase()))
+                  .linearVelocity(hardware.getVelocity());
+               },
+                this));
 
     SmartDashboard.putData(
         "elevator dynamic forward", elevatorSysidDynamic(Direction.kForward));
@@ -126,7 +135,7 @@ public class Elevator extends SubsystemBase implements Logged {
     System.out.println("Running elevator command.. ");
 
     return run(() -> {
-          nextVelo = hardware.getSpeed().in(RadiansPerSecond);
+          nextVelo = hardware.getVelocity().in(MetersPerSecond);
 
           double pidOutput = pid.calculate(hardware.heightFromBase());
           double ffOutput =
@@ -134,14 +143,6 @@ public class Elevator extends SubsystemBase implements Logged {
                   pid.getSetpoint().velocity, (nextVelo - initVelo)); // (nextVelo - initVelo)/0.8
 
           initVelo = nextVelo;
-
-          // System.out.println("Pid setpoint velo and position: " + pid.getSetpoint().velocity+ "
-          // and " + pid.getSetpoint().position);
-          // System.out.println("ffoutput: " + (ffOutput) + " pidOutput: " + pidOutput + " pid velo
-          // setpoint: " + pid.getSetpoint().velocity + " pid position setpoint: " +
-          // pid.getSetpoint().position
-          // + " goal p: " + pid.getGoal().position + " goal v" + pid.getGoal().velocity);
-
           hardware.setVoltage(Volts.of(pidOutput + ffOutput));
           position = hardware.heightFromBase();
         })
@@ -170,6 +171,6 @@ public class Elevator extends SubsystemBase implements Logged {
     super.simulationPeriodic();
     pid.setGoal(goalHeight);
     position = hardware.heightFromBase();
-    velocity = hardware.getSpeed().in(RadiansPerSecond);
+    velocity = hardware.getVelocity().in(MetersPerSecond);
   }
 }

@@ -1,6 +1,7 @@
 package org.sciborgs1155.robot.wristedintake.intake;
 
 import static edu.wpi.first.units.Units.RadiansPerSecond;
+import static edu.wpi.first.units.Units.Second;
 import static edu.wpi.first.units.Units.Volts;
 import static org.sciborgs1155.robot.wristedintake.intake.IntakeConstants.*;
 
@@ -16,6 +17,7 @@ import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 public class SimIntake implements IntakeIO {
 
   private Measure<Voltage> volts;
+  private double initVelo = 0;
 
   FlywheelSim sim =
       new FlywheelSim(
@@ -42,5 +44,13 @@ public class SimIntake implements IntakeIO {
   @Override
   public Measure<Voltage> voltage() {
     return volts;
+  }
+
+  @Override
+  public Measure<Velocity<Velocity<Angle>>> getAccel() {
+    double nextVelo = sim.getAngularVelocityRadPerSec();
+    double accel = (nextVelo - initVelo) / 0.02;
+    initVelo = nextVelo;
+    return RadiansPerSecond.per(Second).of(accel);
   }
 }

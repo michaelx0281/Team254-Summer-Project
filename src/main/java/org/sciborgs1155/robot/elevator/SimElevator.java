@@ -1,12 +1,17 @@
 package org.sciborgs1155.robot.elevator;
 
+import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.Volts;
 import static org.sciborgs1155.robot.elevator.ElevatorConstants.*;
 
+import com.ctre.phoenix6.mechanisms.DifferentialMechanism.DisabledReason;
+
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.units.Angle;
+import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Velocity;
 import edu.wpi.first.units.Voltage;
@@ -39,12 +44,8 @@ public class SimElevator implements ElevatorIO {
   }
 
   @Override
-  public Measure<Velocity<Angle>> getSpeed() {
-    return RadiansPerSecond.of(
-        sim.getVelocityMetersPerSecond()
-            / 1
-            * 2
-            * Math.PI); // TODO change '1' to a constant that scales Rotations to Meters
+  public Measure<Velocity<Distance>> getVelocity() {
+    return MetersPerSecond.of(sim.getVelocityMetersPerSecond());
   }
 
   @Override

@@ -39,7 +39,15 @@ public class Intake extends SubsystemBase implements Logged {
     routine = 
       new SysIdRoutine(
         new SysIdRoutine.Config(), //the line below possibly needs a form of log to be added
-        new SysIdRoutine.Mechanism(volts -> hardware.setVoltage(volts.in(Volts)), null, this)); //TODO change and use unit library units for output of this method
+        new SysIdRoutine.Mechanism(volts -> hardware.setVoltage(
+          volts.in(Volts)),
+           log -> {
+            log.motor("intake")
+              .voltage(hardware.voltage())
+              .angularVelocity(hardware.getSpeed())
+              .angularAcceleration(hardware.getAccel());
+           },
+            this)); //TODO change and use unit library units for output of this method
     
         SmartDashboard.putData("intake dynamic forward", intakeSysidDynamic(Direction.kForward));
         SmartDashboard.putData("intake dynamic backward", intakeSysidDynamic(Direction.kReverse));
